@@ -1,0 +1,451 @@
+\documentclass[11pt,a4paper,UTF8]{ctexart}
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[a4paper, left=3.17cm, right=3.17cm, top=2.54cm, bottom=2.54cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{listings}
+\lstset{breaklines}
+\lstset{
+	extendedchars=false，
+	columns=flexible，
+	tabsize = 4,
+	frame = single,
+	numbers = left
+}
+
+
+\title{基于信号频谱分析的音乐检索专题研讨}
+\author{小组作品}
+\date{\today}
+
+\begin{document}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pictures/BJTU_logo}
+	\end{figure}
+
+	
+	\maketitle
+	\newpage
+	\tableofcontents
+	\newpage
+	
+	\section{前言}
+	\subsection{小组成员}
+	
+	\textbf{廖琛}\quad \qquad 17211401
+	
+	\textbf{高诗博}\qquad 17211337
+	
+	\subsection{运行环境}
+	\textbf{操作系统：}Ubuntu 18.04 LTS
+	
+	\textbf{MATLAB版本：}R2017a for linux
+
+	\section{题目叙述}
+	\textbf{【目的】}
+	
+	(1) 加深信号频谱的概念，以及对信号频域分析基本原理和方法的理解。
+
+	
+	(2) 培养学生理论联系实际的素质，提高学生的工程实践能力和创新能力。
+	
+
+	(3) 培养学生查阅文献、自主学习的能力。
+
+	
+	\textbf{【知识点】}
+	
+	信号的抽样、频域分析，滤波器等
+
+	
+	\textbf{【背景知识】}
+
+	音乐检索的主要方法是基于内容的检索，即利用音乐的音符、旋律、节奏、歌曲风格等语义级的特征或者声学层特征从数据库中检索乐曲。本研究专题使用基于信号频谱分析的方法实现音乐检索。下面给出使用信号频谱分析方法实现音乐检索的原理和方案，该方案包含两部分，第一部分为模板库的构建，第二部分为音乐信号的识别，如图1所示。
+
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pictures/t1}
+		\caption{听音识曲系统}
+		\label{fig:t1}
+	\end{figure}
+	
+
+	模板库的构建：首先在网上下载多首音乐，然后对每首音乐提取特征，多首音乐的特征即构成模板库。音乐信号并不是一个平稳随机过程，所以不能直接对整个信号进行频谱分析，需要对其进行加窗分帧操作。将音乐信号分为毫秒级的多个音乐片段，每个音乐片段可以看做是平稳随机过程，然后对音乐片段进行频谱分析。为了保证两个音乐片段之间的平滑过渡，需要设置一个偏移量，也就是前后两帧的数据需要共同拥有同一节数据，偏移量一般设置为帧长的二分之一。加窗分帧操作可以通过窗函数实现，每移动一次窗函数，便得到一帧的音乐片段。
+
+	音乐信号的识别：打开麦克风对播放音乐进行录制,按照模板库构建过程，对信号进行加窗分帧和特征提取，最后将待识别信号的特征与模板库进行匹配，得到该首音乐的歌曲名称。
+
+	为提高歌曲识别的速度，可以对音乐信号进行降采样处理，需要结合信号抽样和多速率信号处理理论，对音乐信号的频谱进行分析，得到合适的降采样率，以达到在不造成频谱混叠的情况下降低处理的数据量。
+
+	
+	\textbf{【研讨内容】}
+
+	(1) 建立音乐检索数据库。数据库有若干首歌曲或乐曲构成。格式自定，歌曲数量不少于3首。
+
+	(2) 设计并实现基于频谱分析的特征提取算法，如梅尔频率倒谱系数（MFCC）。
+
+	(3) 实现乐曲信号的匹配算法，当特征选用MFCC时，匹配算法可采用动态时间规整（DTW）算法。
+
+	\textbf{【温馨提示】}
+
+	(1) MFCC方法参考资料见“Mel Frequency Cepstral Coefficients for Music modelling.pdf”，也可通过上网查阅相关的中文资料。
+
+	(2) 曲目之间不宜过于类似，当采用MFCC +DTW时，为保证检索在较短时间内完成，数据库每首音乐的时间不超过10s，可将歌曲文件中间部分剪裁10s作为数据库歌曲。
+
+	(3) 信号的匹配可直接调用现有的算法，DTW算法的matlab程序见“dtw.m”。
+
+	(4) 在实现基于频谱分析的特征提取算法，需要综合频谱分析、滤波器等知识点。
+
+	(5) 采用MFCC +DTW实现音乐检索时，其识别正确率可能较低，由于本研学内容重点在于频谱分析与滤波器设计的综合应用，识别正确率不过多强调。
+
+	(6) 若想提高识别正确率，可采用基于hash的特征提取与匹配方法，该方法的参考文献见“Hash.pdf”，相比于MFCC +DTW方法，基于hash的特征提取与匹配方法编程较复杂。
+
+	
+	\textbf{【研讨要求】}
+
+	(1) 编写程序，实现音乐检索系统，编程语言不限。
+
+	(2) 鼓励采用界面的方式完成该系统，如下所示：
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pictures/t2}
+		\caption{UI界面}
+		\label{fig:t2}
+	\end{figure}
+	
+	点击“接收歌曲信号”按钮，系统开始对播放的歌曲录音；点击“识别歌曲”按钮，系统启动歌曲识别算法，识别结束将识别结果显示在上图青色的方框中。
+
+	(3) 完成音乐检索系统的研究报告，报告包括课题背景、方案设计、实验结果与分析以及参考文献。其中关于信号的匹配算法不需要详细的理解，重点说明基于频谱分析的特征提取算法。	
+	
+	\section{预备知识}
+	\subsection{MFCC}
+	\subsubsection{简介}
+	Mel频率倒谱系数的缩写。Mel频率是基于人耳听觉特性提出来的，它与Hz频率成非线性对应关系。Mel频率倒谱系数(MFCC)则是利用它们之间的这种关系，计算得到的Hz频谱特征，MFCC已经广泛地应用在语音识别领域。由于Mel频率与Hz频率之间非线性的对应关系，使得MFCC随着频率的提高，其计算精度随之下降。因此，在应用中常常只使用低频MFCC，而丢弃中高频MFCC。
+	\subsubsection{本研讨流程}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pictures/MFCC_Flow}
+		\caption{MFCC参数提取基本流程}
+		\label{fig:mfccflow}
+	\end{figure}
+	\textbf{1.预加重}
+	
+	预加重处理其实是将语音信号通过一个高通滤波器：
+	\begin{align}
+	H(Z)=1-\mu{}z^{-1}
+	\end{align}
+	
+	式中$\mu$的值介于0.9-1.0之间，我们通常取0.97。预加重的目的是提升高频部分，使信号的频谱变得平坦，保持在低频到高频的整个频带中，能用同样的信噪比求频谱。同时，也是为了消除发生过程中声带和嘴唇的效应，来补偿语音信号受到发音系统所抑制的高频部分，也为了突出高频的共振峰。
+	
+	\textbf{2.分帧}
+	
+	先将N个采样点集合成一个观测单位，称为帧。通常情况下N的值为256或512，涵盖的时间约为20~30ms左右。为了避免相邻两帧的变化过大，因此会让两相邻帧之间有一段重叠区域，此重叠区域包含了M个取样点，通常M的值约为N的1/2或1/3。通常语音识别所采用语音信号的采样频率为8KHz或16KHz，以8KHz来说，若帧长度为256个采样点，则对应的时间长度是32ms。
+	
+	\textbf{3.加窗（Hamming Window）}
+	
+	将每一帧乘以汉明窗，以增加帧左端和右端的连续性。假设分帧后的信号为S(n), n=0,1,…,N-1, N为帧的大小，那么乘上汉明窗后$S'(n)=S(n)\times{}W(n)$,$W(n)$形式如下：
+	
+	\begin{align}
+	W(n,a)=(1-a)-a\times{}cos[\frac{2\pi{}n}{N-1}], 0\le{}n\le{}N-1
+	\end{align}
+	
+	不同的a值会产生不同的汉明窗，一般情况下a取0.46
+	
+	\textbf{4.快速傅里叶变换}
+	
+	由于信号在时域上的变换通常很难看出信号的特性，所以通常将它转换为频域上的能量分布来观察，不同的能量分布，就能代表不同语音的特性。所以在乘上汉明窗后，每帧还必须再经过快速傅里叶变换以得到在频谱上的能量分布。对分帧加窗后的各帧信号进行快速傅里叶变换得到各帧的频谱。并对语音信号的频谱取模平方得到语音信号的功率谱。设语音信号的DFT为：
+	
+	\begin{align}
+	X_a(k)=\sum_{n=0}^{N-1}x(n)e^{-j2\pi{}k/N}, 0\le{}k\le{}N
+	\end{align}
+	
+	式中$x(n)$为输入的语音信号，N表示傅里叶变换的点数。
+	
+	\textbf{5.三角带通滤波器}
+	
+	将能量谱通过一组Mel尺度的三角形滤波器组，定义一个有M个滤波器的滤波器组（滤波器的个数和临界带的个数相近），采用的滤波器为三角滤波器，中心频率为 。M通常取22-26。各f(m)之间的间隔随着m值的减小而缩小，随着m值的增大而增宽。
+	
+	三角滤波器的频率响应定义为:
+	
+\begin{align}
+H_m(k)=\left\{
+\begin{aligned}
+0 &,k\textless{}f(m-1)\\
+\frac{2(k-f(m-1))}{(f(m+1)-f(m-1))(f(m)-f(m-1))} &, f(m-1)\le{}k\le{}f(m)\\
+\frac{2(f(m+1)-k))}{(f(m+1)-f(m-1))(f(m)-f(m-1))} &,f(m)\le{}k\le{}f(m+1)\\
+0 &,k\ge{}f(m+1)
+\end{aligned}
+\right.
+\end{align}
+	
+	式中：
+	\begin{align}
+	\sum_{n=0}^{N-1}H_m(k)=1
+	\end{align}
+	
+	
+	三角带通滤波器有两个主要目的：
+	
+	对频谱进行平滑化，并消除谐波的作用，突显原先语音的共振峰。（因此一段语音的音调或音高，是不会呈现在MFCC 参数内，换句话说，以MFCC 为特征的语音辨识系统，并不会受到输入语音的音调不同而有所影响）此外，还可以降低运算量。
+	
+	\textbf{6.计算每个滤波器组输出的对数能量为}
+	\begin{align}
+	s(m)=ln(\sum_{k=0}^{N-1}|X_a(k)|^2H_m(k)),0\le{}m\le{}M
+	\end{align}
+	
+	\textbf{7.经离散余弦变换（DCT）得到MFCC系数}
+	
+	\begin{align}
+		C(n)=\sum_{m=0}^{N-1}s(m)cos(\frac{\pi{}n(m-0.5)}{M}),n=1,2,...,L
+	\end{align}
+	将上述的对数能量带入离散余弦变换，求出L阶的Mel-scale Cepstrum参数。L阶指MFCC系数阶数，通常取12-16。这里M是三角滤波器个数。
+	
+	\textbf{8.对数能量}
+	
+	此外，一帧的音量（即能量），也是语音的重要特征，而且非常容易计算。因此，通常再加上一帧的对数能量（定义：一帧内信号的平方和，再取以10为底的对数值，再乘以10）使得每一帧基本的语音特征就多了一维，包括一个对数能量和剩下的倒频谱参数。
+	
+	注：若要加入其它语音特征以测试识别率，也可以在此阶段加入，这些常用的其它语音特征包含音高、过零率以及共振峰等。
+	
+	\textbf{9.动态查分参数的提取（包括一阶差分和二阶差分）}
+	
+	标准的倒谱参数MFCC只反映了语音参数的静态特性，语音的动态特性可以用这些静态特征的差分谱来描述。实验证明：把动、静态特征结合起来才能有效提高系统的识别性能。差分参数的计算可以采用下面的公式：
+	\begin{align}
+	d_t=\left\{
+	\begin{aligned}
+	C_{t+1}-C_t  &, t\textless{}K\\
+	\frac{\sum_{K}^{k=1}k(C_{t+k}-C_{t-k})}{\sqrt{2\sum_{K}^{k=1}k^2}} &, Otherwise \\
+	C_t-C_{t-1} &, t\ge{}Q-K
+	\end{aligned}
+	\right.
+	\end{align}
+	式中,dt表示第t个一阶差分；Ct表示第t个倒谱系数；Q表示倒谱系数的阶数；K表示一阶导数的时间差，可取1或2。将上式中结果再代入就可以得到二阶差分的参数。
+
+	
+	\subsection{DTW}
+	\subsubsection{简介}
+	在孤立词语音识别中，最为简单有效的方法是采用DTW（Dynamic Time Warping，动态时间归整）算法，该算法基于动态规划（DP）的思想，解决了发音长短不一的模板匹配问题，是语音识别中出现较早、较为经典的一种算法，用于孤立词识别。HMM算法在训练阶段需要提供大量的语音数据，通过反复计算才能得到模型参数，而DTW算法的训练中几乎不需要额外的计算。所以在孤立词语音识别中，DTW算法仍然得到广泛的应用。
+	
+	\section{程序设计}
+	\subsection{歌曲分割}
+	根据题目要求，取歌曲中的10秒作为样本进行学习以及识别，此处通过bash中的ffmpeg自动完成分割，从第30秒开始分割10秒，程序代码如下：
+	\lstset{language=Bash}
+\begin{lstlisting}
+#! /bin/bash
+for f in `ls ../Music/*.mp3`
+do
+    ffmpeg -i $f -ss 00:00:30 -t 00:00:10 -acodec copy ${f:9} -y
+done
+\end{lstlisting}
+	\lstset{language=Matlab}
+	\subsection{MFCC算法}
+	MFCC算法的代码参考了网上的代码并根据实际情况以及题目要求进行了修改，并且使用了额外的voicebox库。
+	
+	为了方便调用，在此定义为函数，变量为音频文件路径，返回二维的梅尔频率倒谱系数矩阵
+\begin{lstlisting}
+function ccc = MFCC(audio_name)
+\end{lstlisting}
+	为加快识别速度进行重采样至8000
+\begin{lstlisting}
+[x, fs]=audioread(audio_name);
+x = resample(x, 8000, fs);
+fs = 8000;
+\end{lstlisting}
+	定义Mel滤波器
+\begin{lstlisting}
+bank=melbankm(24,256,fs,0,0.4,'t');
+bank=full(bank);
+bank=bank/max(bank(:));
+\end{lstlisting}
+	定义倒谱提升窗口
+\begin{lstlisting}
+w=1+6*sin(pi*(1:12)./12);
+w=w/max(w);
+\end{lstlisting}
+	对在时域的音乐信号通过高通滤波器并分帧。高通滤波器方程式为$H(Z)=1-0.9375z^{-1}$；分帧时每帧长度取256，步长取80
+\begin{lstlisting}
+xx=double(x);
+xx=filter([1-0.9375],1,xx);
+xx=enframe(xx,256,80);
+\end{lstlisting}
+	对每一帧的信号通过长度256的汉明窗，进行FFT并计算得到功率谱，之后对功率谱进行DCT，最后通过倒谱提升窗口得到梅尔频率倒谱系数。
+\begin{lstlisting}
+for i=1:size(xx,1)
+	y=xx(i,:);
+	s=y'.*hamming(256);
+	t=abs(fft(s));
+	t=t.^2;
+	c1=dctcoef*log(bank*t(1:129));
+	c2=c1.*w';
+	m(i,:)=c2';
+end
+\end{lstlisting}
+
+	根据公式求其一阶和二阶差分系数
+\begin{lstlisting}
+dtm=zeros(size(m));
+for i=3:size(m,1)-2
+	dtm(i,:)=-2*m(i-2,:)-m(i-1,:)+m(i+1,:)+2*m(i+2,:);
+end
+dtm=dtm/3;
+dtmm=zeros(size(dtm));  
+for i=3:size(dtm,1)-2
+	dtmm(i,:)=-2*dtm(i-2,:)-dtm(i-1,:)+dtm(i+1,:)+2*dtm(i+2,:);
+end
+dtmm=dtmm/3;
+\end{lstlisting}
+	最终得到含MFCC参数以及一阶、二阶差分MFCC参数的矩阵
+\begin{lstlisting}
+ccc=[m dtm dtmm];
+ccc=ccc(3:size(m,1)-2,:);
+ccc(find(isnan(ccc)==1)) = 0;
+\end{lstlisting}
+	
+	\subsection{DTW}
+	DTW算法直接套用研讨文件中的dtw.m文件，此处只贴代码，不进行深入解读
+	
+\begin{lstlisting}
+function dist = dtw(t,r)
+%输入参数：t 和 r 为求相似度的两组MFCC特征矩阵
+%输出参数： dist为表征相似度的最短距离
+n = size(t,1);
+m = size(r,1);
+%帧匹配距离矩阵
+d = zeros(n,m);
+for i = 1:n
+	A = repmat(t(i,:),m,1);
+	d(i,:) = sum((A-r).^2,2);
+end
+% 累积距离矩阵
+D =  ones(n,m) * realmax; 
+D(1,1) = d(1,1);
+%动态规整
+for i = 2:n
+	for j = 1:m
+		D1 = D(i-1,j);
+		if j>1
+			D2 = D(i-1,j-1);
+		else
+			D2 = realmax;
+		end
+		if j>2
+			D3 = D(i-1,j-2);
+		else
+			D3 = realmax;
+		end
+		D(i,j) = d(i,j) + min([D1,D2,D3]);
+	end
+end
+dist = D(n,m);
+\end{lstlisting}
+
+\subsection{训练数据}
+	将读取所有的音频信号，对其通过MFCC函数处理，将文件列表数据以及训练数据保存到./Data/中
+\begin{lstlisting}
+clear;
+
+thePath = './Music_Cut/';
+
+fileData = dir(strcat(thePath,'*.mp3'));
+
+filesLen = length(fileData);
+
+for i=1:filesLen
+
+	temp = fileData(i).name;
+
+	musicData(:, :,i) = MFCC(strcat(thePath,temp));
+
+end
+
+save('./Data/fileData', 'fileData');
+
+save('./Data/musicData', 'musicData');
+\end{lstlisting}
+
+\subsection{分析并得到结果}
+	读取音频文件，并对其通过MFCC函数处理，与得到的训练数据进行DTW算法对比，得到最匹配矩阵的序列，通过序列在文件列表数据中检索得到相应的歌曲名称并返回
+\begin{lstlisting}
+function theAns = returnAns(Mat)
+
+	load('./Data/fileData', 'fileData');
+
+	load('./Data/musicData', 'musicData');
+
+	len = length(fileData);
+
+	cmpData = MFCC(Mat);
+
+	for i = 1:len
+
+		cmpAns(i) = dtw(musicData(:,:,i),cmpData);
+
+	end
+
+	[minData minI] = min(cmpAns);
+
+	theAns = fileData(minI).name;
+
+
+end
+\end{lstlisting}
+
+\subsection{GUI界面}
+	按键1负责录音模块，点击Start Record时开始录音，再次点击End Record时停止录音并保存到./Temp/tmp.wav中
+\begin{lstlisting}
+function pushbutton1_Callback(hObject, eventdata, handles)
+	global hasData;
+	global isRecording;
+	global R;
+	if(isRecording == false)
+		record(R);
+		set(handles.pushbutton1, 'String', 'End Record');
+		set(handles.text, 'String', 'Recording...');
+		isRecording = true;
+		return;
+	else
+		stop(R);
+		audiowrite('./Temp/tmp.wav', getaudiodata(R), R.SampleRate);
+		set(handles.pushbutton1, 'String', 'Start Record');
+		set(handles.text, 'String', 'Finished Recording');
+		hasData = true;
+		isRecording = false;
+		return;
+	end
+\end{lstlisting}
+
+	按键2负责识别模块，当录完音后，点击Analyse，等到分析完成后将在文本框显示识别结果
+\begin{lstlisting}
+function pushbutton2_Callback(hObject, eventdata, handles)
+	global hasData;
+	if(hasData == true)
+		set(handles.text, 'String', 'Analysing...');
+		ansStr = returnAns('./Temp/tmp.wav');
+		ansStr = strrep(ansStr,'.mp3', '');
+		set(handles.text, 'String', ansStr);
+		return;
+	else
+		set(handles.text, 'String', 'NO RECORDING DATA');
+		return;
+	end
+\end{lstlisting}
+\section{最终结果}
+	\textbf{GUI界面：}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pictures/GUI}
+		\caption{GUI界面}
+		\label{fig:gui}
+	\end{figure}
+
+	\textbf{识别效果：}
+	
+	识别效果见文件包内的展示视频
+	
+
+	\newpage
+\end{document}          

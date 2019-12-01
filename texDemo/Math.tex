@@ -1,0 +1,388 @@
+% !TeX spellcheck = en_US
+%\documentclass[11pt,a4paper,UTF8]{report}
+\documentclass[11pt,a4paper,UTF8]{ctexart}
+\usepackage{setspace}
+% \usepackage{titlesec}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[a4paper, left=3.17cm, right=3.17cm, top=2.54cm, bottom=2.54cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+
+
+
+\title{模拟电子技术研究性学习报告}
+\author{廖琛 17211401}
+\date{\today}
+\begin{document}
+	\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{Pictures/BJTU_logo}
+	\end{figure}
+
+	
+	\maketitle
+	\newpage
+	\tableofcontents
+	\newpage
+	\section{前言}
+		\subsection{选用题目}
+			\textbf{实用型多级放大电路研究:}
+	
+			了解多级放大电路的一般组成结构和级间耦合方式，分析不同耦合方式的特点。
+	
+			分析常见的二级放大电路（共射-共射、共集-共射、共射-共集、共射-共基）的特性，并指出各自适用的场合。选择一个实用型多级（三级及以上）放大电路，分析其组成及工作原理，利用仿真软件，模拟分析其输入输出特性。
+		\subsection{注意事项}
+			本报告中\textbf{默认所有三极管均相同}，即其参数即特性均一致; 默认三极管$r'_{bb}$非常小，放大倍数$\beta$为数十到数百倍。
+
+	\section{共射-共射放大电路}
+		\subsection{分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/EEnpn}
+				\caption{共射-共射放大电路}
+				\label{fig:eenpn}
+			\end{figure}
+
+			\subsubsection{静态点分析}
+			对Q1进行分析：
+			\begin{align}
+				U_{B1} &= \frac{R_2}{R_1+R_2}V_{cc} \\	
+				U_{E1} &= U_{B1} - U_{BE1} \\
+				I_{C1} &\approx I_{E1} = \frac{U_{E1}}{R_4} \\
+				U_{C1} &= V_{CC} - I_{C1}R_3 \nonumber\\ 
+				&= V_{CC} - \frac{R_3}{R_4}U_{E1} \\
+				U_{CE1} &= U_{C1} - U_{E1} \nonumber\\
+				&= V_{CC} - (1+\frac{R_3}{R_4})[\frac{R_2}{R_1+R_2}V_{CC}-U_{BE1}] \nonumber\\
+				&= [1-\frac{(R_3+R_4)R_2}{(R_1+R_2)R_4}]V_{CC} + \frac{R_3+R_4}{R_4}U_{BE}
+			\end{align}
+			
+			对Q2进行分析：
+				
+			\begin{align}
+				U_{B2} &\approx U_{C1} = V_{CC} - \frac{R_3}{R_4}U_{E1} \\
+				U_{E2} &= U_{B2} - U_{BE2} \\
+				I_{C2} &\approx I_{E2} = \frac{U_{E2}}{R_6} \\
+				U_{C2} &= V_{CC} - I_{E2}R_5{}\nonumber \\
+				&= V_{CC} - \frac{R_5}{R_6}U_{E2} \\
+				U_{CE2} &= U_{C2} - U_{E2} \nonumber\\
+				&= V_{CC} - (1+\frac{R_5}{R_6})(V_{CC} - \frac{R_3}{R_4}U_{E1}-U_{BE2}) \nonumber\\
+				&= [\frac{R_2R_3}{R_4(R_1+R_2)}-\frac{R_5}{R_6}]V_{CC} + \frac{R_3+R_4}{R_4}U_{BE}
+			\end{align}
+			\subsubsection{交流分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/EEnpnEqual}
+				\caption{共射-共射放大电路等效图}
+				\label{fig:eenpnequal}
+			\end{figure}
+			
+			\textbf{输入电阻：}
+			\begin{align}
+				h_{ie1} &= r'_{bb} + \frac{26mV}{I_{B1}(mA)}h_{fe} \\
+				R_i &= R_1 // R_2 // h_{ie1} \label{equ:EERi}
+			\end{align}
+			
+			由式(\ref{equ:EERi})可知，共射-共射放大电路的输入电阻是较小的。
+			
+			\textbf{输出阻抗：}
+			\begin{align}
+				R_o = R_7 \label{equ:EERo}
+			\end{align}
+			
+			由式(\ref{equ:EERo})可知，共射-共射放大电路输出电阻与负载有关，负载越大输出电阻越大。
+			
+			\textbf{增益：}
+			\begin{align}
+				A_U &= \frac{U_o}{U_i} \nonumber\\
+				&= \frac{h_{fe}i_{ib2}R_7}{h_{ie1}i_{b1}} \nonumber\\
+				&= \frac{h_{fe}\frac{h_{fe}i_{b1}R_3}{h_{ie2}}R_7}{h_{ie1}i_{b1}} \nonumber \\
+				&= \frac{h^2_{fe}R_3R_7}{h_{ie1}h_{ie2}} \label{equ:EEAu}
+			\end{align}
+			
+			由式(\ref{equ:EEAu})可知其$A_U$非常大。
+			
+			\subsection{适用场合}
+				由以上分析可知：共射-共射放大电路输入电阻较小，输出电阻约等于负载电阻。因此我们可以得出，其适用于需要放大很多倍数，电源驱动能力强，且负载电阻较小时的场景。
+			
+	\section{共集-共射放大电路}
+		\subsection{分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/CEnpn}
+				\caption{共集-共射放大电路}
+				\label{fig:cenpn}
+			\end{figure}
+
+			\subsubsection{静态点分析}
+				对Q1进行分析：
+				\begin{align}
+					U_{B1} &= \frac{R_2}{R_1+R_2}V_{CC} \\
+					U_{E1} &= U_{B1} - U_{BE} \\
+					I_{C1} &\approx I_{E1} = \frac{U_{E1}}{R_4} \\
+					U_{C1} &= V_{CC} - I_{C1}R_3 \\
+					U_{CE1} &= U_{C1} - U_{E1} \nonumber\\
+					&= V_{CC} - \frac{R_3}{R_4}U_{E1} - U_{E1} \nonumber\\
+					&= [1-\frac{R_2(R_3+R_4)}{R_4(R_1+R_2)}]V_{CC} + \frac{R_3+R_4}{R_4}V_{BE}
+				\end{align}
+				
+				对Q2进行分析：
+				\begin{align}
+					U_{B2} &\approx U_{E1} = \frac{R_2}{R_1+R_2}V_{CC} - U_{BE} \\
+					U_{E2} &= U_{B2} - U_{BE} \\
+					I_{C2} &\approx I_{E2} = \frac{U_{E2}}{R_6} \\
+					U_{C2} &= V_{CC} - I_{C2}R_5 \\
+					U_{CE2} &= U_{C2} - U_{E2} \nonumber\\
+					&= V_{CC} - \frac{R_5+R_6}{R_6}U_{E2} \nonumber\\
+					&= [1-\frac{R_2(R_5+R_6)}{R_6(R_1+R_2)}]V_{CC} + \frac{2(R_5+R_6)}{R_6}U_{BE}
+				\end{align}
+			\subsubsection{交流分析}
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=0.7\linewidth]{Pictures/CEnpnEqual}
+					\caption{共集-共射放大电路等效图}
+					\label{fig:cenpnequal}
+				\end{figure}
+			
+			\textbf{输入电阻：}
+			
+			\begin{align}
+				R_i &\approx R_1//R_2//[h_ie1+(R_4//h_ie2)] \label{equ:CERi}
+			\end{align}
+			
+			由式(\ref{equ:CERi})可知，其输入电阻大。
+			
+			\textbf{输出电阻：}
+			
+			\begin{align}
+				R_o &\approx R_5//R_7 \label{equ:CERo}
+			\end{align}
+			
+			由式(\ref{equ:CERo})可知，其输出电阻较大。
+			
+			\textbf{增益：}
+			
+			\begin{align}
+				A_U &= \frac{U_o}{U_i} \nonumber\\
+				&= \frac{-h_{fe}i_{b2}(R_5//R_7)}{h_{fe}i_{b1}R_4} \nonumber\\
+				&= -\frac{i_{b2}(R5//R7)}{i_{b1}R_4} \label{equ:CEAu}
+			\end{align}
+				
+			由式(\ref{equ:CEAu})可知，其放大倍数一般。
+		\subsection{适用场合}
+			由以上分析可知，其输入电阻大，输出电阻较大，放大倍数较为可观。因此我们可以得出，其适用于电源驱动能力较差，负载电阻中等，且需要放大一定倍数的场景。
+
+	\section{共射-共集放大电路}
+		\subsection{分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/ECnpn}
+				\caption{共射-共集放大电路}
+				\label{fig:ecnpn}
+			\end{figure}
+			\subsubsection{静态点分析}
+			对Q1进行分析：
+			\begin{align}
+				U_{B1} &= \frac{R_2}{R_1+R_2}V_{cc} \\	
+				U_{E1} &= U_{B1} - U_{BE1} \\
+				I_{C1} &\approx I_{E1} = \frac{U_{E1}}{R_4} \\
+				U_{C1} &= V_{CC} - I_{C1}R_3 \nonumber\\ 
+				&= V_{CC} - \frac{R_3}{R_4}U_{E1} \\
+				U_{CE1} &= U_{C1} - U_{E1} \nonumber\\
+				&= V_{CC} - (1+\frac{R_3}{R_4})[\frac{R_2}{R_1+R_2}V_{CC}-U_{BE1}] \nonumber\\
+				&= [1-\frac{(R_3+R_4)R_2}{(R_1+R_2)R_4}]V_{CC} + \frac{R_3+R_4}{R_4}U_{BE}
+			\end{align}
+			
+			对Q2进行分析：
+			\begin{align}
+				U_{B2} &= U_{C1} = V_{CC} - \frac{R_3}{R_4}[\frac{R_2}{R_1+R_2}V_{CC}-U_{BE1}] \nonumber\\
+				&= [1-\frac{R_2R_3}{(R_1+R_2)R_4}]V_{CC} + \frac{R_3}{R_4}U_{BE} \\
+				U_{E2} &= U_{B2} - U_{BE} \\
+				I_{C2} &\approx I_{E2} = \frac{U_{E2}}{R_5} \\
+				U_{CE2} &= U_{C2} - U_{E2} \nonumber\\
+				&= \frac{R_2R_3}{R_4(R_1+R_2)}V_{CC} + \frac{R_4-R_3}{R_4}U_{BE}
+			\end{align}
+				
+			\subsubsection{交流分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/ECnpnEqual}
+				\caption{共射-共集放大电路等效图}
+				\label{fig:ecnpnequal}
+			\end{figure}
+			
+			\textbf{输入电阻：}
+			\begin{align}
+				R_i = R_1//R_2//h_{ie1} \label{equ:ECRi}
+			\end{align}
+			
+			由式(\ref{equ:ECRi})可知，其输入电阻较小。
+			
+			\textbf{输出电阻：}
+			\begin{align}
+				R_o = R_5//R_6//(h_{ie2} + R_3) \label{equ:ECRo}
+			\end{align}
+			
+			由式(\ref{equ:ECRo})可知，其输出电阻较大。
+			
+			\textbf{增益：}
+			\begin{align}
+				A_U &= \frac{U_o}{U_i} = \frac{h_{fe}i_{b1}R_3}{-h_{ie1}i_{b1}} \nonumber\\
+				&= -\frac{h_{fe}R_3}{h_{ie1}} \label{equ:ECAu}
+			\end{align}
+
+			由式(\ref{equ:ECAu})可知，其放大倍数较大。
+
+		\subsection{适用场合}
+			由以上分析可知，其输入电阻较小，输出电阻较大，放大倍数较大。因此我们可以得出，其适用于电源驱动能力较强，负载电阻很小，且需要放大一定倍数的场景。
+
+	\section{共射-共基放大电路}
+		\subsection{分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/EBnpn}
+				\caption{共射-共基放大电路}
+				\label{fig:ebnpn}
+			\end{figure}
+			\subsubsection{静态点分析}
+			对Q1进行分析：
+			\begin{align}
+				U_{B1} &= \frac{R_2}{R_1+R_2}V_{CC} \\
+				U_{E1} &= U_{B1} - U_{BE} \\
+				I_{C1} &\approx I_{E1} = \frac{U_{E1}}{R_4} \\
+				U_{C1} &= \frac{R_6}{R_3+R_6}V_{CC} - U_{BE} \\
+				U_{CE1} &= U_{C1} - U_{E1} \nonumber\\
+				&= (\frac{R_6}{R_3+R_6}-\frac{R_2}{R_1+R_2})V_{CC}
+			\end{align}
+			
+			对Q2进行分析：
+			\begin{align}
+				U_{B2} &= \frac{R_6}{R_3+R_6}V_{CC} \\
+				U_{E2} &= U+{B2} - U_{BE} \\
+				I_{C2} &\approx I_{E2} = I_{C1} \\
+				U_{C2} &= V_{CC} - I_{C2}R_5 \\
+				U_{CE2} &= U_{C2} - U_{E2} \nonumber\\
+				&= V_{CC} - \frac{R_5}{R_4}U_{E1} - \frac{R_6}{R_5+R_6}V_{CC} + U_{BE} \nonumber\\
+				&= [1-\frac{R_2R_5}{R_4(R_1+R_2)} - \frac{R_6}{R_3+R_6}]V_{CC} + \frac{R_4+R_5}{R_4}U_{BE}
+			\end{align}
+			
+			\subsubsection{交流分析}
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=0.7\linewidth]{Pictures/EBnpnEqual}
+					\caption{共射-共基放大电路等效图}
+					\label{fig:ebnpnequal}
+				\end{figure}
+			
+			\textbf{输入电阻：}
+			
+			\begin{align}
+				R_i = R_1//R_2//h_{ie1} \label{equ:EBRi}
+			\end{align}
+			
+			由式(\ref{equ:EBRi})可知其输入电阻较大
+			
+			\textbf{输出电阻：}
+			
+			\begin{align}
+				R_o = R_5 \label{equ:EBRo}
+			\end{align}
+			
+			由式(\ref{equ:EBRo})可知其输出电阻较大
+			
+			\textbf{增益：}
+			
+			\begin{align}
+				A_U &= \frac{U_o}{U_i} \nonumber\\
+				&= \frac{-h_{fe}i_{b2}(R_5//R_7)}{h_{ie1}i_{b1}} \label{equ:EBAu}
+			\end{align}
+			
+			由式(\ref{equ:EBAu})可知其放大倍数较为可观
+				
+		\subsection{适用场合}
+			由以上分析可知，其输入电阻较大，输出电阻大小，放大倍数较大。因此我们可以得出，其适用于驱动能力弱的电源放大高频信号。
+			
+		\section{电路设计}
+		\subsection{概述}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.7\linewidth]{Pictures/MA}
+			\caption{三级放大电路}
+			\label{fig:mafreq}
+		\end{figure}
+		
+		本电路通过三个共射放大电路级联的方式，可以将非常小的信号放大，最大放大倍数约为2.7k倍。
+		
+		\textbf{备注：}
+		
+		本实验设$ U_{BE} $=0.7V，基极内部等效电路$ r'_{bb} $ = 100$ \Omega $。
+		
+		\subsection{分析}
+			\subsubsection{静态点分析}
+			对Q1：
+			\begin{align}
+				U_{B1} &= 0.7V \nonumber\\
+				U_{C1} &= \frac{R_2}{R_1+R_2+R_6}(V_{CC}-U_{B1}) \nonumber\\
+				&= 4.24V \nonumber\\
+				I_{B1} &= \frac{U_{C1}-U_{B1}}{R_2} \nonumber\\
+				&= 6.32\mu{}A \nonumber\\
+				I_{E1} &\approx I_{C1} = \frac{V_{CC}-U_{C1}}{R_1+R_6}-I_{B1} \nonumber\\
+				&= 91\mu{}A \nonumber\\
+				U_{CE1} &= U_{C1} - U_{E1} \nonumber\\
+				&= 4.24V \nonumber
+			\end{align}
+			
+			对Q2:
+			\begin{align}
+				U_{B2} &= 0.7V \nonumber\\
+				U_{C2} &= \frac{R_3}{R_3+R_4}(V_{CC} - V_{B2}) \nonumber\\
+				&= 4.248V \nonumber\\
+				I_{B2} &= \frac{U_{C2} - U_{B2}}{R_3} \nonumber\\
+				&= 13.14\mu{}A \nonumber\\
+				I_{E2} &\approx I_{C2} \approx \frac{V_{CC}-U_{C2}}{R_4} \nonumber\\
+				&= 227.8\mu{}A \nonumber\\
+				U_{CE2} &= U_{C2} - U_{E2} \nonumber\\
+				&= 4.248V \nonumber
+			\end{align}
+			
+			对Q3:
+			\begin{align}
+				U_{B3} &= 0.7V \nonumber\\
+				U_{C3} &= \frac{R_5}{R_5+R_L}(V_{CC} - U_B) \nonumber\\
+				&= 4.28V \nonumber\\
+				I_{B3} &= \frac{U_{C3} - U_{B2}}{R_5} \nonumber\\
+				&= 0.239mA \nonumber\\
+				I_{E3} &\approx I_{C3} \approx \frac{V_{CC}- U_{C3}}{R_L} \nonumber\\
+				&= 11.25mA \nonumber\\
+				U_{CE3} &= U_{C3} - U_{E3} \nonumber\\
+				&= 4.28V \nonumber
+			\end{align}
+			\subsubsection{交流分析}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pictures/MAEqual}
+				\caption{三级放大电路等效图}
+				\label{fig:maequal}
+			\end{figure}
+			
+			\begin{align}
+				h_{ie1} &= r'_{bb} + \frac{26mA}{I_{B1}mA} \nonumber\\
+				&\approx 4.11k\Omega{} \nonumber\\
+				h_{ie2} &= r'_{bb} + \frac{26mA}{I_{B2}mA} \nonumber\\
+				&\approx 1.98k\Omega{} \nonumber\\
+				h_{ie3} &= r'_{bb} + \frac{26mA}{I_{B3}mA} \nonumber\\
+				&\approx 0.1k\Omega{} \nonumber\\
+				R_i &= 3.29k\Omega \\
+				R_o &= 15k\Omega
+			\end{align}
+		\subsection{仿真结果}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.7\linewidth]{Pictures/MAfreq}
+			\caption{交流分析}
+			\label{fig:mafreq}
+		\end{figure}
+		
+		从图(\ref{fig:mafreq})可知，其$ f_L \approx 2.51kHz $，$ f_H \approx 908.3kHz $, 带通约$ 900kHz $，最大放大倍数约为3700倍。由此可见，其放大倍数以及高频响应极为可观，可用于放大极小的信号。
+	\newpage
+\end{document}          
